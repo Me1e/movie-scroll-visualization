@@ -1,5 +1,4 @@
 export class LineChart {
-
   #margin;
   #width;
   #height;
@@ -29,22 +28,25 @@ export class LineChart {
   #init(className) {
     const svg = d3.select("#visbox").select("svg");
 
-    this.#chart = svg.append("g")
-      .attr('class', className)
-      .attr('transform', `translate(${this.#margin.left},${this.#margin.top})`); 
-    this.#xAxisGroup = this.#chart.append('g')
-      .attr('transform', `translate(0,${this.#height - this.#margin.bottom})`)
-      .style('font-size', 14);
-    this.#yAxisGroup = this.#chart.append('g')
-      .attr('transform', `translate(${this.#margin.left},0)`)
-      .style('font-size', 14);
-    this.#lineGroup = this.#chart.append('g').append('path');
+    this.#chart = svg
+      .append("g")
+      .attr("class", className)
+      .attr("transform", `translate(${this.#margin.left},${this.#margin.top})`);
+    this.#xAxisGroup = this.#chart
+      .append("g")
+      .attr("transform", `translate(0,${this.#height - this.#margin.bottom})`)
+      .style("font-size", 14);
+    this.#yAxisGroup = this.#chart
+      .append("g")
+      .attr("transform", `translate(${this.#margin.left},0)`)
+      .style("font-size", 14);
+    this.#lineGroup = this.#chart.append("g").append("path");
 
     this.#xScale = d3.scaleUtc();
     this.#yScale = d3.scaleLinear();
     this.#xAxis = d3.axisBottom(this.#xScale);
     this.#yAxis = d3.axisLeft(this.#yScale);
-    this.#line = d3.line()
+    this.#line = d3.line();
   }
 
   #setXscale(dates) {
@@ -56,7 +58,7 @@ export class LineChart {
 
   #setYscale(data) {
     this.#yScale
-      .domain([0, this.#maxValue || d3.max(data, d => d.value)])
+      .domain([0, this.#maxValue || d3.max(data, (d) => d.value)])
       .range([this.#height - this.#margin.bottom, this.#margin.top]);
     return this;
   }
@@ -76,9 +78,7 @@ export class LineChart {
     //   .duration(250)
     //   .ease(d3.easeLinear)
 
-    this.#line
-      .x((d) => this.#xScale(d.date))
-      .y((d) => this.#yScale(d.value));
+    this.#line.x((d) => this.#xScale(d.date)).y((d) => this.#yScale(d.value));
 
     this.#lineGroup
       .data([data])
@@ -86,8 +86,8 @@ export class LineChart {
       .duration(250)
       .ease(d3.easeLinear)
       .attr("d", this.#line)
-      .attr('fill', 'none')
-      .style("stroke", d3.schemeTableau10[0])
+      .attr("fill", "none")
+      .style("stroke", d3.schemeTableau10[0]);
 
     return this;
   }
@@ -109,7 +109,7 @@ export class LineChart {
       .#setYscale(data)
       .#setXaxis()
       .#setYaxis()
-      .#setLines(data)
+      .#setLines(data);
 
     return this;
   }

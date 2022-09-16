@@ -1,8 +1,6 @@
 import { scroller } from "./scroller.js";
 import { LineChart } from "./charts/line_chart.js";
-import {
-  getMovieData
-} from './services/movie_data.js';
+import { getMovieData } from "./services/movie_data.js";
 
 const WIDTH = 1000;
 const HEIGHT = 1000;
@@ -24,12 +22,10 @@ function drawInitial() {
     .attr("height", HEIGHT)
     .attr("opacity", 1);
 
-  lineChart = new LineChart('line-chart', WIDTH, HEIGHT)
+  lineChart = new LineChart("line-chart", WIDTH, HEIGHT);
 
   draw1();
-
 }
-
 
 /*
   clean 함수
@@ -43,12 +39,14 @@ function clean(visType) {
     svg.selectAll(".movie-img").attr("opacity", 0);
     console.log("clean first chart");
   }
-  if (visType !== "isLine"){
+  if (visType !== "isLine") {
     lineChart.unshow();
     console.log("clean line chart");
   }
+  if (visType !== "isVis4") {
+    svg.selectAll(".vis4").attr("opacity", 0);
+  }
 }
-
 
 /*
   draw1 ~ draw3
@@ -76,31 +74,44 @@ function draw1() {
     .attr("height", "92%");
 }
 
-
 async function draw2() {
   clean("isLine");
 
-  const { dates, data } = await getMovieData('2019');
+  const { dates, data } = await getMovieData("2019");
   lineChart.drawChart(dates, data).show();
 }
-
 
 async function draw3() {
   clean("isLine");
 
-  const { dates, data } = await getMovieData('2020');
+  const { dates, data } = await getMovieData("2020");
   lineChart.drawChart(dates, data).show();
 }
 
+function draw4() {
+  clean("isVis4");
+
+  const svg = d3.select("#visbox").select("svg");
+
+  if (!svg.select(".vis4").empty()) {
+    svg.select(".vis4").attr("opacity", 1);
+    return;
+  }
+
+  svg
+    .append("rect")
+    .attr("class", "vis4")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", "300")
+    .attr("height", "300")
+    .attr("fill", "yellow");
+}
 
 /*
   scroller에서 
   visFuncList에 등록된 순서대로 
   visbox sections에 맞춰 보여줌
 */
-const visFuncList = [
-  draw1,
-  draw2,
-  draw3,
-];
+const visFuncList = [draw1, draw2, draw3, draw4];
 scroller(visFuncList)();
